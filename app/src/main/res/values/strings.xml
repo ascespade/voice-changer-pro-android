@@ -16,5 +16,6 @@
     <string name="voice_selected">Voice selected successfully</string>
     <string name="service_not_available">Service not available</string>
     <string name="select_voice_first">Please select a voice first</string>
+    <string name="accessibility_service_description">Voice Changer Pro accessibility service for system-wide voice processing</string>
 </resources>
 

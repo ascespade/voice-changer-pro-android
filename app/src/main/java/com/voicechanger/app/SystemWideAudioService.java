@@ -44,7 +44,7 @@ public class SystemWideAudioService extends AccessibilityService {
     private AudioRecord audioRecord;
     private MediaProjection mediaProjection;
     private MediaProjectionManager mediaProjectionManager;
-    private SystemWideVoiceProcessor voiceProcessor;
+    public SystemWideVoiceProcessor voiceProcessor;
     private boolean isCapturing = false;
     
     // Set of communication app package names for efficient lookup
@@ -171,11 +171,20 @@ public class SystemWideAudioService extends AccessibilityService {
         
         try {
             // Create AudioPlaybackCaptureConfiguration to capture system audio
-            AudioPlaybackCaptureConfiguration config = new AudioPlaybackCaptureConfiguration.Builder(mediaProjection.getNativeSessionId())
-                    .addMatchingUsage(AudioManager.USAGE_VOICE_COMMUNICATION)
-                    .addMatchingUsage(AudioManager.USAGE_MEDIA)
-                    .addMatchingUsage(AudioManager.USAGE_VOICE_COMMUNICATION_SIGNALLING)
-                    .build();
+            // Note: AudioPlaybackCaptureConfiguration requires API 29+, so we'll use regular AudioRecord for API 26
+            AudioPlaybackCaptureConfiguration config = null;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                try {
+                    // For API 29+, we can use AudioPlaybackCaptureConfiguration
+                    config = new AudioPlaybackCaptureConfiguration.Builder(mediaProjection)
+                            .addMatchingUsage(2) // USAGE_VOICE_COMMUNICATION
+                            .addMatchingUsage(1) // USAGE_MEDIA
+                            .build();
+                } catch (Exception e) {
+                    Log.w(TAG, "Could not create AudioPlaybackCaptureConfiguration: " + e.getMessage());
+                    config = null;
+                }
+            }
             
             // Create AudioRecord with playback capture configuration
             AudioFormat audioFormat = new AudioFormat.Builder()
@@ -186,11 +195,18 @@ public class SystemWideAudioService extends AccessibilityService {
             
             int bufferSize = AudioRecord.getMinBufferSize(SAMPLE_RATE, CHANNEL_CONFIG, AUDIO_FORMAT);
             
-            audioRecord = new AudioRecord.Builder()
+            AudioRecord.Builder builder = new AudioRecord.Builder()
                     .setAudioFormat(audioFormat)
-                    .setBufferSizeInBytes(bufferSize * 2)
-                    .setAudioPlaybackCaptureConfig(config)
-                    .build();
+                    .setBufferSizeInBytes(bufferSize * 2);
+            
+            if (config != null) {
+                builder.setAudioPlaybackCaptureConfig(config);
+            } else {
+                // For API 26, use regular microphone recording
+                builder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            }
+            
+            audioRecord = builder.build();
             
             if (audioRecord.getState() == AudioRecord.STATE_INITIALIZED) {
                 audioRecord.startRecording();
@@ -335,15 +351,6 @@ public class SystemWideAudioService extends AccessibilityService {
         return instance;
     }
     
-    @Override
-    protected void onServiceConnected() {
-        super.onServiceConnected();
-        instance = this;
-        Log.d(TAG, "SystemWideAudioService connected, instance set.");
-        
-        // Initialize voice processor with free AI models
-        voiceProcessor = new SystemWideVoiceProcessor(this);
-    }
 
     @Override
     public boolean onUnbind(Intent intent) {

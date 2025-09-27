@@ -92,3 +92,19 @@ lint/tmp/
 
 # Output metadata
 output-metadata.json
+
+# Gradle distributions and wrapper files
+gradle-*/
+gradle-*-bin.zip
+gradle-*-bin.zip.*
+
+# VS Code settings
+.vscode/
+
+# Claude AI files
+.claude/
+
+# Additional build and cache directories
+**/build/
+**/.gradle/
+**/gradle/wrapper/gradle-wrapper.jar
