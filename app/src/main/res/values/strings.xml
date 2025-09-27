@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Voice Changer Pro</string>
+    <string name="api_key_hint">Enter your ElevenLabs API key</string>
+    <string name="save_api_key">Save API Key</string>
+    <string name="select_voice">Select Saudi Girl Voice</string>
+    <string name="start_voice_changer">Start Voice Changer</string>
+    <string name="stop_voice_changer">Stop Voice Changer</string>
+    <string name="no_voice_selected">No voice selected</string>
+    <string name="voice_processing_active">Voice processing active</string>
+    <string name="ready">Ready</string>
+    <string name="connecting">Connecting to service...</string>
+    <string name="audio_level">Audio Level: %.1f dB</string>
+    <string name="permissions_required">Permissions are required for voice processing</string>
+    <string name="api_key_saved">API key saved</string>
+    <string name="voice_selected">Voice selected successfully</string>
+    <string name="service_not_available">Service not available</string>
+    <string name="select_voice_first">Please select a voice first</string>
+</resources>
+
