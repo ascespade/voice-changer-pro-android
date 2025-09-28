@@ -108,3 +108,4 @@ gradle-*-bin.zip.*
 **/build/
 **/.gradle/
 **/gradle/wrapper/gradle-wrapper.jar
+.env
