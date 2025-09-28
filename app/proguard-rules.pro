@@ -1,37 +1,70 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+# Voice Changer Pro - ProGuard Rules for Security and Optimization
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+# Basic Android rules
+-keepattributes SourceFile,LineNumberTable
+-renamesourcefileattribute SourceFile
+-dontwarn android.support.**
+-dontwarn androidx.**
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Security: Remove debug information
+-keepattributes !LocalVariableTable,!LocalVariableTypeTable
+-assumenosideeffects class android.util.Log {
+    public static *** d(...);
+    public static *** v(...);
+    public static *** i(...);
+}
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
-
-# Keep voice processing classes
+# Keep essential voice processing classes
 -keep class com.voicechanger.app.** { *; }
 
-# Keep API client classes
--keep class com.voicechanger.app.ElevenLabsApiClient { *; }
+# Keep AI and API classes
+-keep class com.voicechanger.app.GeminiAIService { *; }
+-keep class com.voicechanger.app.AIVoiceAnalyzer { *; }
+-keep class com.voicechanger.app.VoiceCloningEngine { *; }
 
 # Keep audio processing classes
 -keep class com.voicechanger.app.AudioProcessor { *; }
--keep class com.voicechanger.app.VoiceProcessingEngine { *; }
+-keep class com.voicechanger.app.AdvancedVoiceProcessor { *; }
+-keep class com.voicechanger.app.LiveCallOptimizer { *; }
 -keep class com.voicechanger.app.SystemWideVoiceProcessor { *; }
 
 # Keep service classes
 -keep class com.voicechanger.app.SystemWideAudioService { *; }
--keep class com.voicechanger.app.VoiceProcessingService { *; }
 -keep class com.voicechanger.app.MediaProjectionService { *; }
+
+# Keep template management
+-keep class com.voicechanger.app.VoiceTemplateManager { *; }
+
+# Keep OkHttp and Gson
+-keep class okhttp3.** { *; }
+-keep class com.google.gson.** { *; }
+-keep class retrofit2.** { *; }
+
+# Security: Obfuscate package names
+-repackageclasses 'a'
+-flattenpackagehierarchy 'a'
+
+# Remove unused code
+-dontshrink
+-dontoptimize
+-dontpreverify
+
+# Keep native methods
+-keepclasseswithmembernames class * {
+    native <methods>;
+}
+
+# Keep enums
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
+
+# Security: Remove logging
+-assumenosideeffects class * {
+    public static *** d(...);
+    public static *** v(...);
+    public static *** i(...);
+    public static *** w(...);
+    public static *** e(...);
+}

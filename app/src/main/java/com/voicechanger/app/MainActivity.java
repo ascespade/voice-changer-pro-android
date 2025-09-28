@@ -31,11 +31,14 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.voicechanger.app.SystemWideVoiceProcessor.VoiceProcessingMode;
+import com.voicechanger.app.VoiceCloningEngine.VoiceCloningMode;
+import com.voicechanger.app.VoiceTemplateManager.VoiceTemplate;
+import com.voicechanger.app.VoiceTemplateManager.VoiceProfile;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SystemWideVoiceProcessor.VoiceProcessorListener {
+public class MainActivity extends AppCompatActivity implements SystemWideVoiceProcessor.VoiceProcessorListener, VoiceCloningEngine.VoiceCloningListener, LiveCallOptimizer.LiveCallListener {
 
     private static final String TAG = "MainActivity";
     private static final int REQUEST_CODE_POST_NOTIFICATIONS = 1001;
@@ -52,6 +55,9 @@ public class MainActivity extends AppCompatActivity implements SystemWideVoicePr
     private EditText apiKeyEditText;
 
     private SystemWideAudioService systemWideAudioService;
+    private LiveCallOptimizer liveCallOptimizer;
+    private VoiceTemplateManager voiceTemplateManager;
+    private AIVoiceAnalyzer aiVoiceAnalyzer;
     private boolean isServiceBound = false;
     private ActivityResultLauncher<Intent> mediaProjectionLauncher;
 
@@ -85,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements SystemWideVoicePr
 
         initViews();
         setupSpinners();
+        initializeVoiceSystems();
         checkAndRequestPermissions();
         registerMediaProjectionLauncher();
     }
@@ -100,23 +107,96 @@ public class MainActivity extends AppCompatActivity implements SystemWideVoicePr
 
         startStopButton.setOnClickListener(v -> toggleVoiceChanger());
     }
+    
+    private void initializeVoiceSystems() {
+        // Initialize voice template manager
+        voiceTemplateManager = new VoiceTemplateManager(this);
+        
+        // Initialize live call optimizer
+        liveCallOptimizer = new LiveCallOptimizer(this);
+        liveCallOptimizer.setListener(this);
+        
+        // Initialize AI voice analyzer
+        aiVoiceAnalyzer = new AIVoiceAnalyzer(this);
+        aiVoiceAnalyzer.setListener(new AIVoiceAnalyzer.VoiceAnalyzerListener() {
+            @Override
+            public void onRecordingStarted() {
+                runOnUiThread(() -> {
+                    Toast.makeText(MainActivity.this, "AI Voice Analysis Started", Toast.LENGTH_SHORT).show();
+                });
+            }
+            
+            @Override
+            public void onRecordingStopped(byte[] audioData) {
+                runOnUiThread(() -> {
+                    Toast.makeText(MainActivity.this, "Recording stopped, analyzing with AI...", Toast.LENGTH_SHORT).show();
+                });
+            }
+            
+            @Override
+            public void onAnalysisComplete(GeminiAIService.VoiceAnalysisResult result) {
+                runOnUiThread(() -> {
+                    String message = String.format("AI Analysis Complete:\nGender: %s\nAge: %d\nConfidence: %.1f%%", 
+                            result.gender, result.estimatedAge, result.confidence * 100);
+                    Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+                });
+            }
+            
+            @Override
+            public void onTemplateGenerated(GeminiAIService.VoiceTemplate template) {
+                runOnUiThread(() -> {
+                    Toast.makeText(MainActivity.this, "AI Template Generated: " + template.name, Toast.LENGTH_SHORT).show();
+                });
+            }
+            
+            @Override
+            public void onError(String message) {
+                runOnUiThread(() -> {
+                    Toast.makeText(MainActivity.this, "AI Error: " + message, Toast.LENGTH_LONG).show();
+                });
+            }
+        });
+        
+        Log.d(TAG, "Voice systems with AI initialized");
+    }
 
     private void setupSpinners() {
-        // Voice Models
-        List<String> voiceModels = new ArrayList<>();
-        voiceModels.add("saudi_girl_warm");
-        voiceModels.add("deep_male");
-        voiceModels.add("robot");
-        ArrayAdapter<String> voiceModelAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, voiceModels);
+        // Voice Models - Load from template manager
+        List<VoiceTemplate> templates = voiceTemplateManager.getAllTemplates();
+        List<String> voiceModelNames = new ArrayList<>();
+        for (VoiceTemplate template : templates) {
+            voiceModelNames.add(template.name);
+        }
+        
+        ArrayAdapter<String> voiceModelAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, voiceModelNames);
         voiceModelAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         voiceModelSpinner.setAdapter(voiceModelAdapter);
         voiceModelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedModel = (String) parent.getItemAtPosition(position);
-                if (systemWideAudioService != null && systemWideAudioService.voiceProcessor != null) {
-                    systemWideAudioService.voiceProcessor.setVoiceModel(selectedModel);
-                    Toast.makeText(MainActivity.this, "Voice model set to: " + selectedModel, Toast.LENGTH_SHORT).show();
+                String selectedModelName = (String) parent.getItemAtPosition(position);
+                
+                // Find template by name
+                VoiceTemplate selectedTemplate = null;
+                for (VoiceTemplate template : templates) {
+                    if (template.name.equals(selectedModelName)) {
+                        selectedTemplate = template;
+                        break;
+                    }
+                }
+                
+                if (selectedTemplate != null) {
+                    // Set voice in live call optimizer
+                    if (liveCallOptimizer != null) {
+                        liveCallOptimizer.setVoiceProfile(selectedTemplate.id);
+                    }
+                    
+                    // Set voice in system wide audio service
+                    if (systemWideAudioService != null && systemWideAudioService.voiceProcessor != null) {
+                        systemWideAudioService.voiceProcessor.setVoiceModel(selectedTemplate.id);
+                    }
+                    
+                    Toast.makeText(MainActivity.this, "Voice set to: " + selectedTemplate.name, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -370,6 +450,97 @@ public class MainActivity extends AppCompatActivity implements SystemWideVoicePr
             statusTextView.setTextColor(ContextCompat.getColor(this, R.color.red_500));
             updateUiState(); // Revert UI to inactive state
         });
+    }
+    
+    // VoiceCloningEngine.VoiceCloningListener methods
+    @Override
+    public void onVoiceCloned(String voiceId, float similarity) {
+        runOnUiThread(() -> {
+            Toast.makeText(MainActivity.this, "Voice cloned successfully! Similarity: " + (similarity * 100) + "%", Toast.LENGTH_LONG).show();
+            Log.d(TAG, "Voice cloned: " + voiceId + " with similarity: " + similarity);
+        });
+    }
+    
+    @Override
+    public void onPerformanceUpdate(long avgLatency, long totalChunks) {
+        runOnUiThread(() -> {
+            Log.d(TAG, "Voice cloning performance - Avg latency: " + avgLatency + " ms, Total chunks: " + totalChunks);
+        });
+    }
+    
+    // LiveCallOptimizer.LiveCallListener methods
+    @Override
+    public void onLatencyUpdate(long currentLatency, long maxLatency) {
+        runOnUiThread(() -> {
+            latencyTextView.setText(String.format("Latency: %d ms (Max: %d ms)", currentLatency, maxLatency));
+        });
+    }
+    
+    @Override
+    public void onAudioLevelChanged(float inputLevel, float outputLevel) {
+        // Update audio level indicators if needed
+        Log.d(TAG, "Audio levels - Input: " + inputLevel + " dB, Output: " + outputLevel + " dB");
+    }
+    
+    // AI Voice Analysis Methods
+    private void startAIVoiceAnalysis() {
+        if (aiVoiceAnalyzer == null) {
+            Toast.makeText(this, "AI Voice Analyzer not initialized", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        if (aiVoiceAnalyzer.isRecording()) {
+            // Stop recording and analyze
+            aiVoiceAnalyzer.stopRecordingAndAnalyze();
+            Toast.makeText(this, "AI Analysis Complete", Toast.LENGTH_SHORT).show();
+        } else {
+            // Start recording
+            aiVoiceAnalyzer.startRecording();
+            Toast.makeText(this, "AI Analysis Started", Toast.LENGTH_SHORT).show();
+        }
+    }
+    
+    private void generateAITemplate() {
+        if (aiVoiceAnalyzer == null) {
+            Toast.makeText(this, "AI Voice Analyzer not initialized", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        GeminiAIService.VoiceAnalysisResult lastAnalysis = aiVoiceAnalyzer.getLastAnalysisResult();
+        if (lastAnalysis == null) {
+            Toast.makeText(this, "Please analyze a voice first", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        
+        // Show dialog to select target voice
+        showTargetVoiceDialog();
+    }
+    
+    private void showTargetVoiceDialog() {
+        String[] targetVoices = {
+            "فتاة سعودية شابة",
+            "امرأة سعودية ناضجة", 
+            "رجل سعودي عميق",
+            "طفل سعودي",
+            "مراهقة سعودية",
+            "عجوز سعودية"
+        };
+        
+        new AlertDialog.Builder(this)
+                .setTitle("Select Target Voice")
+                .setItems(targetVoices, (dialog, which) -> {
+                    String targetVoice = targetVoices[which];
+                    generateTemplateForTarget(targetVoice);
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+    
+    private void generateTemplateForTarget(String targetVoice) {
+        if (aiVoiceAnalyzer != null) {
+            aiVoiceAnalyzer.generateIntelligentTemplate(targetVoice);
+            Toast.makeText(this, "Generating AI template for: " + targetVoice, Toast.LENGTH_SHORT).show();
+        }
     }
 }
 
