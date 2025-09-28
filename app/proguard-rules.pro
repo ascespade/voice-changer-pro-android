@@ -40,15 +40,6 @@
 -keep class com.google.gson.** { *; }
 -keep class retrofit2.** { *; }
 
-# Security: Obfuscate package names
--repackageclasses 'a'
--flattenpackagehierarchy 'a'
-
-# Remove unused code
--dontshrink
--dontoptimize
--dontpreverify
-
 # Keep native methods
 -keepclasseswithmembernames class * {
     native <methods>;
@@ -60,11 +51,29 @@
     public static ** valueOf(java.lang.String);
 }
 
-# Security: Remove logging
--assumenosideeffects class * {
-    public static *** d(...);
-    public static *** v(...);
-    public static *** i(...);
-    public static *** w(...);
-    public static *** e(...);
+# Keep Parcelable implementations
+-keep class * implements android.os.Parcelable {
+    public static final android.os.Parcelable$Creator *;
+}
+
+# Keep serializable classes
+-keepnames class * implements java.io.Serializable
+-keepclassmembers class * implements java.io.Serializable {
+    static final long serialVersionUID;
+    private static final java.io.ObjectStreamField[] serialPersistentFields;
+    !static !transient <fields>;
+    private void writeObject(java.io.ObjectOutputStream);
+    private void readObject(java.io.ObjectInputStream);
+    java.lang.Object writeReplace();
+    java.lang.Object readResolve();
+}
+
+# Remove logging in release builds
+-assumenosideeffects class android.util.Log {
+    public static boolean isLoggable(java.lang.String, int);
+    public static int v(...);
+    public static int i(...);
+    public static int w(...);
+    public static int d(...);
+    public static int e(...);
 }

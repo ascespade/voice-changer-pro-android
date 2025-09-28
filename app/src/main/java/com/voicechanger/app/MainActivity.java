@@ -64,13 +64,13 @@ public class MainActivity extends AppCompatActivity implements SystemWideVoicePr
     private final ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
-            // This is not a bound service, so this method won't be called for SystemWideAudioService
-            // We get the instance via static method
             Log.d(TAG, "Service connected: " + name.getClassName());
             isServiceBound = true;
             if (SystemWideAudioService.getInstance() != null) {
                 systemWideAudioService = SystemWideAudioService.getInstance();
-                systemWideAudioService.voiceProcessor.setListener(MainActivity.this);
+                if (systemWideAudioService.voiceProcessor != null) {
+                    systemWideAudioService.voiceProcessor.setListener(MainActivity.this);
+                }
                 updateUiState();
             }
         }
@@ -287,7 +287,7 @@ public class MainActivity extends AppCompatActivity implements SystemWideVoicePr
     private void showOverlayPermissionDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("Grant Overlay Permission")
-                .setMessage("This app requires \'Display over other apps\' permission for Media Projection to work correctly on some devices. Please grant it in settings.")
+                .setMessage("This app requires 'Display over other apps' permission for Media Projection to work correctly on some devices. Please grant it in settings.")
                 .setPositiveButton("Go to Settings", (dialog, which) -> {
                     Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                             Uri.parse("package:" + getPackageName()));
@@ -310,7 +310,11 @@ public class MainActivity extends AppCompatActivity implements SystemWideVoicePr
                         serviceIntent.setAction("START_PROJECTION");
                         serviceIntent.putExtra("resultCode", resultCode);
                         serviceIntent.putExtra("data", data);
-                        startForegroundService(serviceIntent);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            startForegroundService(serviceIntent);
+                        } else {
+                            startService(serviceIntent);
+                        }
 
                         // Pass MediaProjection to SystemWideAudioService
                         if (systemWideAudioService != null) {
@@ -543,4 +547,3 @@ public class MainActivity extends AppCompatActivity implements SystemWideVoicePr
         }
     }
 }
-

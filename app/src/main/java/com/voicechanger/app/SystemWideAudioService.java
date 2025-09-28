@@ -1,13 +1,6 @@
 package com.voicechanger.app;
 
 import android.accessibilityservice.AccessibilityService;
-import android.content.Intent;
-import android.media.AudioFormat;
-import android.media.AudioManager;
-import android.media.AudioPlaybackCaptureConfiguration;
-import android.media.AudioRecord;
-import android.media.MediaRecorder;
-import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioFormat;
@@ -32,7 +25,6 @@ import java.util.Set;
  * audio from all applications on the device.
  * Enhanced with MediaProjection integration and robust error handling.
  */
-@RequiresApi(api = Build.VERSION_CODES.Q)
 public class SystemWideAudioService extends AccessibilityService {
     private static final String TAG = "SystemWideAudioService";
     
@@ -46,6 +38,9 @@ public class SystemWideAudioService extends AccessibilityService {
     private MediaProjectionManager mediaProjectionManager;
     public SystemWideVoiceProcessor voiceProcessor;
     private boolean isCapturing = false;
+    
+    // Static instance for access from MainActivity
+    private static SystemWideAudioService instance;
     
     // Set of communication app package names for efficient lookup
     private static final Set<String> COMMUNICATION_APPS = new HashSet<>(Arrays.asList(
@@ -69,6 +64,7 @@ public class SystemWideAudioService extends AccessibilityService {
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
         mediaProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
         Log.d(TAG, "SystemWideAudioService onCreate");
     }
@@ -80,11 +76,6 @@ public class SystemWideAudioService extends AccessibilityService {
         
         // Initialize voice processor with free AI models
         voiceProcessor = new SystemWideVoiceProcessor(this);
-        
-        // Request MediaProjection permission from user if not already granted
-        // This part needs to be triggered from MainActivity or a user interaction
-        // For now, we assume MediaProjection is already set if available.
-        // startSystemWideCapture(); // This will be called when MediaProjection is ready or by user action
     }
     
     @Override
@@ -110,6 +101,7 @@ public class SystemWideAudioService extends AccessibilityService {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        instance = null;
         Log.d(TAG, "SystemWideAudioService destroyed");
         stopSystemWideCapture();
         
@@ -130,13 +122,6 @@ public class SystemWideAudioService extends AccessibilityService {
     public void startSystemWideCapture() {
         if (isCapturing) {
             Log.w(TAG, "System-wide capture already active.");
-            return;
-        }
-        
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && mediaProjection == null) {
-            Log.e(TAG, "MediaProjection not set. Cannot start system-wide capture on Android Q+.");
-            // Fallback to microphone capture if MediaProjection is not available
-            startMicrophoneCapture();
             return;
         }
         
@@ -171,14 +156,13 @@ public class SystemWideAudioService extends AccessibilityService {
         
         try {
             // Create AudioPlaybackCaptureConfiguration to capture system audio
-            // Note: AudioPlaybackCaptureConfiguration requires API 29+, so we'll use regular AudioRecord for API 26
             AudioPlaybackCaptureConfiguration config = null;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 try {
                     // For API 29+, we can use AudioPlaybackCaptureConfiguration
                     config = new AudioPlaybackCaptureConfiguration.Builder(mediaProjection)
-                            .addMatchingUsage(2) // USAGE_VOICE_COMMUNICATION
-                            .addMatchingUsage(1) // USAGE_MEDIA
+                            .addMatchingUsage(AudioManager.USAGE_VOICE_COMMUNICATION)
+                            .addMatchingUsage(AudioManager.USAGE_MEDIA)
                             .build();
                 } catch (Exception e) {
                     Log.w(TAG, "Could not create AudioPlaybackCaptureConfiguration: " + e.getMessage());
@@ -278,7 +262,6 @@ public class SystemWideAudioService extends AccessibilityService {
             if (isCapturing) {
                 Log.w(TAG, "Audio processing thread stopped unexpectedly. Attempting to restart capture.");
                 stopSystemWideCapture(); // Clean up current state
-                // Consider a delayed restart or user notification here
             }
         });
         
@@ -345,13 +328,10 @@ public class SystemWideAudioService extends AccessibilityService {
     }
     
     // Static method to get the SystemWideAudioService instance
-    private static SystemWideAudioService instance;
-    
     public static SystemWideAudioService getInstance() {
         return instance;
     }
     
-
     @Override
     public boolean onUnbind(Intent intent) {
         instance = null;
@@ -359,4 +339,3 @@ public class SystemWideAudioService extends AccessibilityService {
         return super.onUnbind(intent);
     }
 }
-

@@ -8,4 +8,3 @@
     android:description="@string/accessibility_service_description"
     android:notificationTimeout="100"
     android:packageNames="com.whatsapp,com.snapchat.android,com.facebook.orca,com.viber.voip,com.skype.raider,us.zoom.videomeetings,com.discord,org.telegram.messenger,com.google.android.apps.tachyon,com.microsoft.teams,com.tencent.mm,jp.naver.line.android,com.kakao.talk,com.android.server.telecom,com.android.dialer" />
-
