@@ -1,21 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- App Information -->
     <string name="app_name">Voice Changer Pro</string>
-    <string name="api_key_hint">Enter your ElevenLabs API key</string>
-    <string name="save_api_key">Save API Key</string>
-    <string name="select_voice">Select Saudi Girl Voice</string>
+    <string name="app_tagline">Professional AI-Powered Voice Transformation</string>
+    
+    <!-- Main Activity -->
+    <string name="system_status">System Status</string>
+    <string name="status_active">Status: Active</string>
+    <string name="status_inactive">Status: Inactive</string>
+    <string name="status_error">Status: Error</string>
+    <string name="status_initializing">Status: Initializing</string>
+    
+    <!-- Performance Metrics -->
+    <string name="latency_label">Latency</string>
+    <string name="success_rate_label">Success Rate</string>
+    <string name="latency_unit">ms</string>
+    <string name="success_rate_unit">%</string>
+    <string name="latency_na">N/A</string>
+    <string name="success_rate_na">N/A</string>
+    
+    <!-- Voice Configuration -->
+    <string name="voice_configuration">Voice Configuration</string>
+    <string name="voice_model">Voice Model</string>
+    <string name="processing_mode">Processing Mode</string>
+    <string name="api_configuration">API Configuration</string>
+    <string name="api_key_hint">Enter your API key</string>
+    
+    <!-- Voice Models -->
+    <string name="voice_model_default">Default Voice</string>
+    <string name="voice_model_male">Male Voice</string>
+    <string name="voice_model_female">Female Voice</string>
+    <string name="voice_model_child">Child Voice</string>
+    <string name="voice_model_elderly">Elderly Voice</string>
+    <string name="voice_model_robot">Robot Voice</string>
+    <string name="voice_model_whisper">Whisper Voice</string>
+    
+    <!-- Processing Modes -->
+    <string name="processing_mode_realtime">Real-time</string>
+    <string name="processing_mode_batch">Batch</string>
+    <string name="processing_mode_hybrid">Hybrid</string>
+    <string name="processing_mode_ai">AI Enhanced</string>
+    
+    <!-- Control Buttons -->
     <string name="start_voice_changer">Start Voice Changer</string>
     <string name="stop_voice_changer">Stop Voice Changer</string>
-    <string name="no_voice_selected">No voice selected</string>
-    <string name="voice_processing_active">Voice processing active</string>
-    <string name="ready">Ready</string>
-    <string name="connecting">Connecting to service...</string>
-    <string name="audio_level">Audio Level: %.1f dB</string>
-    <string name="permissions_required">Permissions are required for voice processing</string>
-    <string name="api_key_saved">API key saved</string>
-    <string name="voice_selected">Voice selected successfully</string>
-    <string name="service_not_available">Service not available</string>
-    <string name="select_voice_first">Please select a voice first</string>
-    <string name="accessibility_service_description">Voice Changer Pro accessibility service for system-wide voice processing</string>
+    <string name="settings">Settings</string>
+    <string name="help">Help</string>
+    
+    <!-- AI Features -->
+    <string name="ai_features">AI Features</string>
+    <string name="real_time_analysis">Real-time Voice Analysis</string>
+    <string name="voice_cloning">Voice Cloning</string>
+    <string name="smart_processing">Smart Processing</string>
+    
+    <!-- Permissions -->
+    <string name="permission_audio_title">Audio Permission Required</string>
+    <string name="permission_audio_message">This app needs microphone access to record and process your voice.</string>
+    <string name="permission_notification_title">Notification Permission Required</string>
+    <string name="permission_notification_message">This app needs notification permission to show foreground service status.</string>
+    <string name="permission_accessibility_title">Accessibility Service Required</string>
+    <string name="permission_accessibility_message">This app requires the Accessibility Service to be enabled for system-wide voice changing.</string>
+    <string name="permission_overlay_title">Overlay Permission Required</string>
+    <string name="permission_overlay_message">This app needs overlay permission for Media Projection to work correctly.</string>
+    
+    <!-- Permission Actions -->
+    <string name="go_to_settings">Go to Settings</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="cancel">Cancel</string>
+    <string name="ok">OK</string>
+    
+    <!-- Messages -->
+    <string name="service_not_ready">Service not ready. Please wait.</string>
+    <string name="voice_changer_started">Voice Changer Started</string>
+    <string name="voice_changer_stopped">Voice Changer Stopped</string>
+    <string name="audio_permission_granted">Audio permission granted.</string>
+    <string name="audio_permission_denied">Audio permission denied. Cannot record audio.</string>
+    <string name="notification_permission_granted">Notification permission granted.</string>
+    <string name="notification_permission_denied">Notification permission denied. App may not show foreground service notifications.</string>
+    
+    <!-- Errors -->
+    <string name="error_general">An error occurred. Please try again.</string>
+    <string name="error_service_unavailable">Service is currently unavailable.</string>
+    <string name="error_permission_denied">Required permission was denied.</string>
+    <string name="error_network">Network error. Please check your connection.</string>
+    <string name="error_api_key">Invalid API key. Please check your configuration.</string>
+    
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_audio">Audio Settings</string>
+    <string name="settings_ai">AI Settings</string>
+    <string name="settings_advanced">Advanced Settings</string>
+    <string name="settings_about">About</string>
+    
+    <!-- Help -->
+    <string name="help_title">Help &amp; Support</string>
+    <string name="help_getting_started">Getting Started</string>
+    <string name="help_troubleshooting">Troubleshooting</string>
+    <string name="help_faq">Frequently Asked Questions</string>
+    <string name="help_contact">Contact Support</string>
+    
+    <!-- About -->
+    <string name="about_title">About Voice Changer Pro</string>
+    <string name="about_version">Version 1.0.0</string>
+    <string name="about_description">Professional AI-powered voice transformation application with real-time processing capabilities.</string>
+    <string name="about_developer">Developed with ❤️ for professional voice transformation</string>
+    
+    <!-- Accessibility -->
+    <string name="accessibility_service_description">Voice Changer Pro uses accessibility services to capture and process system audio for real-time voice transformation.</string>
+    
+    <!-- Voice Processing -->
+    <string name="voice_processing_started">Voice processing started</string>
+    <string name="voice_processing_stopped">Voice processing stopped</string>
+    <string name="voice_processing_error">Voice processing error</string>
+    <string name="voice_processing_optimized">Voice processing optimized</string>
+    
+    <!-- AI Analysis -->
+    <string name="ai_analysis_started">AI Voice Analysis Started</string>
+    <string name="ai_analysis_complete">AI Analysis Complete</string>
+    <string name="ai_analysis_error">AI Analysis Error</string>
+    <string name="ai_template_generated">AI Template Generated</string>
+    
+    <!-- Performance -->
+    <string name="performance_excellent">Excellent</string>
+    <string name="performance_good">Good</string>
+    <string name="performance_fair">Fair</string>
+    <string name="performance_poor">Poor</string>
+    
+    <!-- Time Units -->
+    <string name="time_milliseconds">ms</string>
+    <string name="time_seconds">s</string>
+    <string name="time_minutes">m</string>
+    <string name="time_hours">h</string>
 </resources>
-

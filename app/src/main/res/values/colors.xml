@@ -1,24 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Primary Colors -->
+    <color name="primary_color">#6366F1</color>
+    <color name="primary_dark">#4F46E5</color>
+    <color name="primary_light">#A5B4FC</color>
+    <color name="primary_blue">#2196F3</color>
+    <color name="primary_dark_blue">#1976D2</color>
     
-    <!-- Custom colors for voice changer theme -->
-    <color name="primary_blue">#3498db</color>
-    <color name="primary_dark_blue">#2980b9</color>
-    <color name="secondary_green">#27ae60</color>
-    <color name="accent_red">#e74c3c</color>
-    <color name="background_light">#f5f5f5</color>
-    <color name="card_background">#ffffff</color>
-    <color name="text_primary">#2c3e50</color>
-    <color name="text_secondary">#34495e</color>
-    <color name="text_muted">#7f8c8d</color>
-    <color name="green_500">#27ae60</color>
-    <color name="red_500">#e74c3c</color>
+    <!-- Secondary Colors -->
+    <color name="secondary_color">#EC4899</color>
+    <color name="secondary_dark">#DB2777</color>
+    <color name="secondary_light">#F9A8D4</color>
+    <color name="secondary_green">#4CAF50</color>
+    
+    <!-- Accent Colors -->
+    <color name="accent_color">#10B981</color>
+    <color name="accent_dark">#059669</color>
+    <color name="accent_light">#6EE7B7</color>
+    <color name="accent_red">#EF4444</color>
+    
+    <!-- Text Colors -->
+    <color name="primary_text">#1F2937</color>
+    <color name="secondary_text">#6B7280</color>
+    <color name="tertiary_text">#9CA3AF</color>
+    
+    <!-- Status Colors -->
+    <color name="status_active">#10B981</color>
+    <color name="status_inactive">#EF4444</color>
+    <color name="status_warning">#F59E0B</color>
+    <color name="status_info">#3B82F6</color>
+    
+    <!-- Background Colors -->
+    <color name="background_primary">#FFFFFF</color>
+    <color name="background_secondary">#F9FAFB</color>
+    <color name="background_tertiary">#F3F4F6</color>
+    <color name="background_light">#F9FAFB</color>
+    
+    <!-- Card Colors -->
+    <color name="card_background">#FFFFFF</color>
+    <color name="card_elevation">#F3F4F6</color>
+    
+    <!-- Metric Colors -->
+    <color name="metric_text">#374151</color>
+    <color name="metric_label">#6B7280</color>
+    
+    <!-- Divider -->
+    <color name="divider_color">#E5E7EB</color>
+    
+    <!-- Gradient Colors -->
+    <color name="gradient_start">#667eea</color>
+    <color name="gradient_end">#764ba2</color>
+    
+    <!-- Button Colors -->
+    <color name="button_primary">#6366F1</color>
+    <color name="button_secondary">#F3F4F6</color>
+    <color name="button_danger">#EF4444</color>
+    <color name="button_success">#10B981</color>
+    
+    <!-- Material Design Colors -->
+    <color name="material_blue_500">#2196F3</color>
+    <color name="material_blue_700">#1976D2</color>
+    <color name="material_green_500">#4CAF50</color>
+    <color name="material_green_700">#388E3C</color>
+    <color name="material_red_500">#F44336</color>
+    <color name="material_red_700">#D32F2F</color>
+    <color name="material_orange_500">#FF9800</color>
+    <color name="material_orange_700">#F57C00</color>
+    <color name="material_purple_500">#9C27B0</color>
+    <color name="material_purple_700">#7B1FA2</color>
+    
+    <!-- System Colors -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="transparent">#00000000</color>
+    
+    <!-- Overlay Colors -->
+    <color name="overlay_light">#80FFFFFF</color>
+    <color name="overlay_dark">#80000000</color>
 </resources>
-

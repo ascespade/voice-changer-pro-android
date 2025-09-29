@@ -1,0 +1,29 @@
+# Agent Fast Configuration
+# This file contains optimized settings for AI Agents
+
+# Fast Development Commands
+FAST_BUILD="./gradlew assembleDebug --parallel --daemon --build-cache"
+FAST_CLEAN="./gradlew clean --parallel --daemon"
+FAST_EDIT="micro"
+FAST_INSTALL="adb install -r app/build/outputs/apk/debug/app-debug.apk"
+
+# Memory Optimization
+GRADLE_OPTS="-Xmx4g -XX:MaxPermSize=1g -XX:+HeapDumpOnOutOfMemoryError"
+JAVA_OPTS="-Xmx4g"
+
+# Performance Settings
+GRADLE_PARALLEL=true
+GRADLE_CACHING=true
+GRADLE_DAEMON=true
+GRADLE_CONFIGUREONDEMAND=true
+
+# File Operations
+USE_WRITE_TOOL=true
+USE_SEARCH_REPLACE=true
+USE_MULTI_EDIT=true
+AVOID_LINE_BY_LINE=true
+
+# Agent Instructions
+AGENT_MODE=FAST
+PREFER_BATCH_OPERATIONS=true
+MINIMIZE_TERMINAL_CALLS=true
