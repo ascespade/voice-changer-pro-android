@@ -11,12 +11,12 @@ if (signingPropertiesFile.exists()) {
 
 android {
     namespace 'com.voicechanger.app'
-    compileSdk 34
+    compileSdk 35
 
     defaultConfig {
         applicationId "com.voicechanger.app"
         minSdk 26
-        targetSdk 34
+        targetSdk 35
         versionCode 1
         versionName "1.0"
 
@@ -68,40 +68,40 @@ android {
     }
     
     // Ensure resources.arsc is uncompressed for Android R+
-    aaptOptions {
+    androidResources {
         noCompress 'arsc'
     }
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'androidx.core:core:1.12.0'
-    
+    implementation 'androidx.core:core-ktx:1.13.1'
+
     // HTTP client for API calls
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.12.0'
-    
+
     // JSON parsing
     implementation 'com.google.code.gson:gson:2.10.1'
-    
+
     // Retrofit for API integration
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-    
+    implementation 'com.squareup.retrofit2:retrofit:2.11.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.11.0'
+
     // Audio processing and media
     implementation 'androidx.media:media:1.7.0'
-    
+
     // Performance optimization
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.7.0'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'
-    
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.8.7'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7'
+
     // Threading and concurrency
-    implementation 'androidx.concurrent:concurrent-futures:1.1.0'
-    
+    implementation 'androidx.concurrent:concurrent-futures:1.2.0'
+
     // Testing
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 }

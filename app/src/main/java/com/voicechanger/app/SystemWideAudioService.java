@@ -3,6 +3,7 @@ package com.voicechanger.app;
 import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioAttributes;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioPlaybackCaptureConfiguration;
@@ -161,8 +162,8 @@ public class SystemWideAudioService extends AccessibilityService {
                 try {
                     // For API 29+, we can use AudioPlaybackCaptureConfiguration
                     config = new AudioPlaybackCaptureConfiguration.Builder(mediaProjection)
-                            .addMatchingUsage(AudioManager.USAGE_VOICE_COMMUNICATION)
-                            .addMatchingUsage(AudioManager.USAGE_MEDIA)
+                            .addMatchingUsage(AudioAttributes.USAGE_VOICE_COMMUNICATION)
+                            .addMatchingUsage(AudioAttributes.USAGE_MEDIA)
                             .build();
                 } catch (Exception e) {
                     Log.w(TAG, "Could not create AudioPlaybackCaptureConfiguration: " + e.getMessage());
